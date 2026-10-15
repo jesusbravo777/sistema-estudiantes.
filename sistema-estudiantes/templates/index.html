@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Registro de estudiantes</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <p class="eyebrow">PROYECTO PYTHON FULL STACK</p>
+      <h1>Registro de estudiantes</h1>
+      <p class="subtitle">Agrega, consulta y administra registros de forma sencilla.</p>
+    </header>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="notice {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <section class="panel">
+      <h2>Agregar estudiante</h2>
+      <form action="{{ url_for('agregar') }}" method="post" class="form-grid">
+        <label>Nombre completo<input name="nombre" maxlength="100" required placeholder="Ej. Ana Pérez"></label>
+        <label>RUT<input name="rut" maxlength="12" required placeholder="Ej. 12345678-9"></label>
+        <label>Curso<input name="curso" maxlength="30" required placeholder="Ej. 4° Medio C"></label>
+        <button type="submit">Agregar estudiante</button>
+      </form>
+    </section>
+    <section class="panel">
+      <div class="section-heading"><h2>Estudiantes registrados</h2><span class="count">{{ estudiantes|length }} registros</span></div>
+      {% if estudiantes %}
+      <div class="table-wrap"><table>
+        <thead><tr><th>Nombre</th><th>RUT</th><th>Curso</th><th>Acción</th></tr></thead>
+        <tbody>{% for e in estudiantes %}
+          <tr><td>{{ e.nombre }}</td><td>{{ e.rut }}</td><td>{{ e.curso }}</td>
+            <td><form action="{{ url_for('eliminar', estudiante_id=e.id) }}" method="post" onsubmit="return confirm('¿Eliminar este registro?')"><button class="danger" type="submit">Eliminar</button></form></td>
+          </tr>
+        {% endfor %}</tbody>
+      </table></div>
+      {% else %}<p class="empty">Todavía no hay estudiantes. Agrega el primero usando el formulario.</p>{% endif %}
+    </section>
+    <footer>Proyecto educativo de Cristopher Orellana · Python + Flask + SQLite</footer>
+  </main>
+</body>
+</html>
